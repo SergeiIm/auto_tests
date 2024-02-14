@@ -9,7 +9,7 @@ def pytest_addoption(parser):
     parser.addoption('--browser_name', action='store', default='Chrome', help='input browser name: chrome or firefox')
 
 
-@pytest.fixture(scope='class')
+@pytest.fixture(scope='function')
 def browser(request):
     browser_name = request.config.getoption('browser_name')
     browser_lang = request.config.getoption('language')
@@ -24,8 +24,7 @@ def browser(request):
         print("\n>>> start browser firefox for class test.")
         browser = webdriver.Firefox(options=options)
     else:
-        assert False, \
-            '\n>>> input browser name: chrome or firefox.'
+        assert False, '\n>>> input browser name: chrome or firefox.'
 
     yield browser
     print("\nquit browser for test.")
