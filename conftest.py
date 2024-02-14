@@ -16,12 +16,12 @@ def browser(request):
     if browser_name.lower() == 'chrome':
         options = OptionsChrome()
         options.add_experimental_option("prefs", {'intl.accept_languages': browser_lang})
-        print("\n>>> start browser chrome for class test.")
+        print("\n>>> start browser chrome for function test.")
         browser = webdriver.Chrome(options=options)
     elif browser_name.lower() == 'firefox':
         options = OptionsFirefox()
         options.set_preference("intl.accept_languages", browser_lang)
-        print("\n>>> start browser firefox for class test.")
+        print("\n>>> start browser firefox for function test.")
         browser = webdriver.Firefox(options=options)
     else:
         assert False, '\n>>> input browser name: chrome or firefox.'
