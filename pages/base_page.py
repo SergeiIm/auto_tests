@@ -54,11 +54,11 @@ class BasePage:
         try:
             link = self.browser.find_element(how, what)
         except NoSuchElementException:
-            return False
+            assert False, 'Element not found.'
         try:
             link.click()
         except ElementNotInteractableException:
-            return False
+            assert False, 'Element not clickabling.'
         return True
 
     def is_str_in_url_present(self, sub_url: str) -> bool:
@@ -99,3 +99,7 @@ class BasePage:
 
     def should_be_login_link(self):
         assert self.is_element_present(*BasePageLocators.LOGIN_LINK), "Login link is not presented."
+
+    def should_be_authorized_user(self):
+        assert self.is_element_present(*BasePageLocators.USER_ICON), "User icon is not presented," \
+                                                                     " probably unauthorised user"
