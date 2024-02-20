@@ -1,7 +1,11 @@
 import math
 
-from selenium.common.exceptions import NoSuchElementException
-from selenium.common.exceptions import NoAlertPresentException
+from selenium.common.exceptions import NoSuchElementException, NoAlertPresentException, NoSuchAttributeException, \
+    ElementNotInteractableException, TimeoutException
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as ec
+
+from .locators import BasePageLocators
 
 
 class BasePage:
@@ -9,15 +13,50 @@ class BasePage:
         self.browser = browser
         self.url = url
         self.browser.implicitly_wait(timeout)
-        self.dict_objects = dict()     # save key and link objects
 
     def open(self):
         self.browser.get(self.url)
+
+    def is_disappeared(self, how, what, timeout=4):
+        try:
+            WebDriverWait(self.browser, timeout, 1, (TimeoutException, )). \
+                until_not(ec.presence_of_element_located((how, what)))
+        except TimeoutException:
+            return False
+        return True
 
     def is_element_present(self, how, what: str) -> bool:
         try:
             self.browser.find_element(how, what)
         except NoSuchElementException:
+            return False
+        return True
+
+    def is_not_element_present(self, how, what: str, timeout=4):
+        try:
+            WebDriverWait(self.browser, timeout).until(ec.presence_of_element_located((how, what)))
+        except TimeoutException:
+            return True
+        return False
+
+    def get_element_attribute_text(self, how, what) -> bool:
+        try:
+            tmp = self.browser.find_element(how, what)
+        except NoSuchElementException:
+            return False
+        try:
+            return tmp.text
+        except NoSuchAttributeException:
+            return False
+
+    def click_element(self, how, what: str) -> bool:
+        try:
+            link = self.browser.find_element(how, what)
+        except NoSuchElementException:
+            return False
+        try:
+            link.click()
+        except ElementNotInteractableException:
             return False
         return True
 
@@ -42,20 +81,18 @@ class BasePage:
         except NoAlertPresentException:
             print("No second alert presented")
 
-    def is_element_present_save_him_in_dict_objects(self, how, what: str, key) -> bool:
-        list_element = self.browser.find_elements(how, what)
-        if len(list_element) == 0:
-            assert False, f"Bad locators for '{key}'. Not found no one object."
-        elif len(list_element) > 1:
-            assert False, f"Bad locators for '{key}'. Find more one object."
-        else:
-            self.dict_objects[key] = list_element[0]
-            return True
+    # ------------------------------------------- methods for interface.-------------------------------------------
 
-    def click_element(self, key) -> bool:
-        try:
-            self.dict_objects[key].click()
-            return True
-        except TypeError:
-            print(f"Bad locators for '{key}'.This objects or not clicked or not exist in this moment.")
+    def go_to_login_page(self):
+        login_link = self.browser.find_element(*BasePageLocators.LOGIN_LINK)
+        login_link.click()
+        # return LoginPage(browser=self.browser, url=self.browser.current_url)
+        # alert = self.browser.switch_to.alert
+        # alert.accept()
 
+    def go_to_basket_page(self):
+        basket_link = self.browser.find_element(*BasePageLocators.BASKET_LINK)
+        basket_link.click()
+
+    def should_be_login_link(self):
+        assert self.is_element_present(*BasePageLocators.LOGIN_LINK), "Login link is not presented."

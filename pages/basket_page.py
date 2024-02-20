@@ -3,9 +3,18 @@ from .locators import BasketPageLocators
 
 
 class BasketPage(BasePage):
+    def should_not_be_rows_on_basket(self):
+        assert self.is_not_element_present(*BasketPageLocators.ROWS_IN_BASKET), "Basket_should_be_empty."
 
-    def add_product_on_basket(self):
-        self.is_element_present_save_him_in_dict_objects(*BasketPageLocators.NAME_PRODUCT, key='name')
-        self.dict_objects['name'] = self.dict_objects['name'].text
-        self.is_element_present_save_him_in_dict_objects(*BasketPageLocators.BASKET_MINI, key='basket-mini')
-        self.dict_objects['basket-mini'] = self.dict_objects['basket-mini'].text
+    def should_be_attribute_text(self):
+        try:
+            element = self.browser.find_element(*BasketPageLocators.LINK_MESSAGE_BASKET_IS_EMPTY)
+        except ValueError:
+            assert False, "Not find element 'MESSAGE_BASKET_IS_EMPTY' on the page."
+        try:
+            tmp = element.text
+        except TypeError:
+            assert False, "Element not have attribute 'text'."
+        message = BasketPageLocators.TEXT_MESSAGE_BASKET_IS_EMPTY
+        assert message in tmp, f"Text element '{tmp}' not include message '{message}'."
+        return True
