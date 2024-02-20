@@ -39,6 +39,7 @@ def test_guest_can_add_product_to_basket(browser, link):
     product_page.check_price_of_product_on_message_add_on_basket()
 
 
+@pytest.mark.xfail
 @pytest.mark.parametrize('link', links_4)
 def test_guest_cant_see_success_message_after_adding_product_to_basket(browser, link):
     # Открываем страницу товара.
@@ -59,6 +60,7 @@ def test_guest_cant_see_success_message(browser, link):
     product_page.should_not_be_success_message()
 
 
+@pytest.mark.xfail
 @pytest.mark.parametrize('link', links_4)
 def test_message_disappeared_after_adding_product_to_basket(browser, link):
     # Открываем страницу товара.

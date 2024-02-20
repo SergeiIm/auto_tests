@@ -1,4 +1,4 @@
-from time import sleep
+# from time import sleep
 
 import pytest
 
@@ -15,7 +15,6 @@ def test_guest_can_go_to_login_page(browser, link):
     page_main = MainPage(browser=browser, url=link)
     page_main.open()
     page_main.should_be_login_link()
-#    page_login = page_main.go_to_page_login()
     page_main.go_to_login_page()
     login_page = LoginPage(browser, browser.current_url)
     login_page.should_be_login_page()
