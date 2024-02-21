@@ -1,5 +1,3 @@
-# from time import sleep
-
 import pytest
 
 from .pages.main_page import MainPage
@@ -12,22 +10,18 @@ links_2 = ['http://selenium1py.pythonanywhere.com/catalogue/the-shellcoders-hand
 
 @pytest.mark.parametrize('link', links_1)
 def test_guest_cant_see_product_in_basket_opened_from_main_page(browser, link):
-    # Гость открывает главную страницу.
     page = MainPage(browser, link)
     page.open()
-    # Переходит в корзину по кнопке в шапке сайта.
     page.go_to_basket_page()
     basket_page = BasketPage(browser, browser.current_url)
-    # Ожидаем, что в корзине нет товаров.
     basket_page.should_not_be_rows_on_basket()
-    # Ожидаем, что есть текст о том что корзина пуста.
     basket_page.should_be_attribute_text()
 
 
-@pytest.mark.login_guest
+@pytest.mark.login_user
 class TestLoginFromMainPage:
     @pytest.mark.parametrize('link', links_1)
-    def test_guest_can_go_to_login_page(self, browser, link):
+    def test_user_can_go_to_login_page(self, browser, link):
         page_main = MainPage(browser=browser, url=link)
         page_main.open()
         page_main.should_be_login_link()
@@ -36,7 +30,7 @@ class TestLoginFromMainPage:
         login_page.should_be_login_page()
 
     @pytest.mark.parametrize('link', links_1)
-    def test_guest_should_see_login_link(self, browser, link):
+    def test_user_should_see_login_link(self, browser, link):
         page = MainPage(browser, link)
         page.open()
         page.should_be_login_link()

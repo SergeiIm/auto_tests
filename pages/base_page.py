@@ -87,15 +87,24 @@ class BasePage:
     # ------------------------------------------- methods for interface.-------------------------------------------
 
     def go_to_login_page(self):
-        login_link = self.browser.find_element(*BasePageLocators.LOGIN_LINK)
-        login_link.click()
-        # return LoginPage(browser=self.browser, url=self.browser.current_url)
-        # alert = self.browser.switch_to.alert
-        # alert.accept()
+        try:
+            login_link = self.browser.find_element(*BasePageLocators.LOGIN_LINK)
+        except NoSuchElementException:
+            assert False, "Not find locator 'LOGIN_LINK'."
+        try:
+            login_link.click()
+        except NoSuchAttributeException:
+            assert False, "Link with locator 'LOGIN_LINK' is not be click."
 
     def go_to_basket_page(self):
-        basket_link = self.browser.find_element(*BasePageLocators.BASKET_LINK)
-        basket_link.click()
+        try:
+            basket_link = self.browser.find_element(*BasePageLocators.BASKET_LINK)
+        except NoSuchElementException:
+            assert False, "Not find locator 'BASKET_LINK'."
+        try:
+            basket_link.click()
+        except NoSuchAttributeException:
+            assert False, "Link with locator 'BASKET_LINK' is not be click."
 
     def should_be_login_link(self):
         assert self.is_element_present(*BasePageLocators.LOGIN_LINK), "Login link is not presented."
